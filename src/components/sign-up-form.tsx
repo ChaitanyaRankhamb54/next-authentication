@@ -1,21 +1,62 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/src/lib/utils"
+import { Button } from "@/src/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/src/components/ui/card"
+import { Input } from "@/src/components/ui/input"
+import { Label } from "@/src/components/ui/label"
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
+import { validateRegister } from "../models/registerSchema"
+import { useState } from "react"
+import { signIn } from "next-auth/react"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [errors, setErrors] = useState<string[]>([]);
+
+  async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+
+    const form = e.currentTarget;
+    const formData = {
+      username: (form.elements.namedItem("username") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      password: (form.elements.namedItem("password") as HTMLInputElement).value,
+    }
+
+    // Frontend validation with Zod
+    const result = validateRegister(formData);
+
+    if (!result.success) {
+      // Handle validation errors
+      setErrors(result.error.issues.map((err) => err.message));
+      return;
+    }
+
+    setErrors([]); // Clear previous errors if validation passes
+
+    // Call backend API
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log("Registration successful:", data);
+    } else {
+      const errorData = await res.json();
+      setErrors([errorData.message || "Registration failed"]);
+    }
+  }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -26,14 +67,14 @@ export function SignupForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSignUp}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => signIn("github")}>
                   <FaGithub className="size-4" />
                   Sign up with GitHub
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => signIn("google")}>
                   <FaGoogle className="size-4" />
                   Sign up with Google
                 </Button>
@@ -47,7 +88,7 @@ export function SignupForm({
                 <div className="grid gap-3">
                   <Label htmlFor="username">Username</Label>
                   <Input
-                    id="username"
+                    name="username"
                     type="text"
                     placeholder="Your username"
                     required
@@ -56,7 +97,7 @@ export function SignupForm({
                 <div className="grid gap-3">
                   <Label htmlFor="email">Email</Label>
                   <Input
-                    id="email"
+                    name="email"
                     type="email"
                     placeholder="m@example.com"
                     required
@@ -64,8 +105,23 @@ export function SignupForm({
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required />
+                  <Input
+                    name="password"
+                    type="password"
+                    placeholder="enter your password"
+                    required
+                  />
                 </div>
+
+                {/* // Show error messages */}
+                {errors.length > 0 && (
+                  <div className="text-red-500 text-sm space-y-1">
+                    {errors.map((err, idx) => (
+                      <p key={idx}>{err}</p>
+                    ))}
+                  </div>
+                )}
+
                 <Button type="submit" className="w-full">
                   Sign up
                 </Button>
