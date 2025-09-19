@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 import * as z from "zod";
 
 interface IUser extends Document {
@@ -68,6 +68,6 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-const User = model<IUser>("User", userSchema);
+const User = models.User || model<IUser>("User", userSchema);
 
 export default User;
