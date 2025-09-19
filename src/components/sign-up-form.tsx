@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/src/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import {
@@ -12,14 +14,17 @@ import { Label } from "@/src/components/ui/label"
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { validateRegister } from "../models/registerSchema"
-import { useState } from "react"
 import { signIn } from "next-auth/react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [errors, setErrors] = useState<string[]>([]);
+
+  const router = useRouter();
 
   async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -52,10 +57,18 @@ export function SignupForm({
     if (res.ok) {
       const data = await res.json();
       console.log("Registration successful:", data);
+      router.push("/login");
     } else {
-      const errorData = await res.json();
-      setErrors([errorData.message || "Registration failed"]);
+      let errorMessage = "Registration failed";
+      try {
+        const errorData = await res.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // response was empty, fallback message
+      }
+      setErrors([errorMessage]);
     }
+
   }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

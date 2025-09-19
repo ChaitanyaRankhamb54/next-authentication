@@ -31,3 +31,9 @@ export class ErrorInUserCreation extends AppError {
     super(message, 500);
   }
 }
+
+export class ErrorInSecretKey extends AppError {
+  constructor(message = "Secret key is not defined!") {
+    super(message, 500);
+  }
+}

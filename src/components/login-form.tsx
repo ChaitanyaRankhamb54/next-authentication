@@ -15,12 +15,14 @@ import { Label } from "@/src/components/ui/label"
 import { FaGithub, FaGoogle } from "react-icons/fa"
 import { signIn } from "next-auth/react"
 import { validateLogin } from "../models/loginSchema"
+import { useRouter } from "next/navigation"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [errors, setErrors] = useState<string[]>([])
+  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -53,6 +55,7 @@ export function LoginForm({
     if (res.ok) {
       const data = await res.json()
       console.log("Login successful:", data)
+      router.push("/signup");
     } else {
       const errorData = await res.json()
       setErrors([errorData.message || "Login failed"])

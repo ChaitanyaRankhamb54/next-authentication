@@ -1,24 +1,36 @@
-// controllers/authController.ts
+// controllers/authController/authRegister.ts
 import * as authService from "../../services/authService/authRegister";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { AppError } from "../../lib/error";
 
-export async function HandleUserRegistrationController(req: NextApiRequest, res: NextApiResponse) {
-  const { username, email, password } = req.body;
-
+export async function HandleUserRegistrationController(req: NextRequest) {
   try {
-    const user =
-      await authService.HandleUserRegistrationService(username, email, password);
+    const { username, email, password } = await req.json();
 
-    return res.status(201).json({ user, message: "User registered successfully" });
+    if (!username || !email || !password) {
+      return NextResponse.json(
+        { message: "All fields are required!" },
+        { status: 400 }
+      );
+    }
+
+    const user = await authService.HandleUserRegistrationService(
+      username,
+      email,
+      password
+    );
+
+    return NextResponse.json(
+      { user, message: "User registered successfully" },
+      { status: 201 }
+    );
 
   } catch (err: any) {
     if (err instanceof AppError) {
-      return res.status(err.statusCode).json({ message: err.message });
+      return NextResponse.json({ message: err.message }, { status: err.statusCode });
     }
 
-    // Unexpected error
     console.error("Unexpected error:", err);
-    return res.status(500).json({ message: "Internal server error" });
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
