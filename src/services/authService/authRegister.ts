@@ -1,25 +1,38 @@
-// services/authService.js
-import User from "../../models/user";
-import bcrypt from "bcryptjs";
-import { generateToken } from "@/lib/jwt";
+import { UserAlreadyExistsError, EmailAlreadyExistsError } from "../../lib/error";
+import hashPassword from "../../lib/bcrypt";
+import getDB from "../../lib/connection";
+import { ErrorInUserCreation } from "@/src/lib/error";
 
-export async function registerUser(username: string, email: string, password: string) {
-  const user = await User.findOne({ where: { email } });
-  if (!user) throw new Error("User not found");
+export async function HandleUserRegistrationService(username: string, email: string, password: string) {
+  const db = await getDB();
+  const usersCollection = db.collection("users");
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
+  // Check username
+  const existingUserByUsername = await usersCollection.findOne({ username });
+  if (existingUserByUsername) {
+    throw new UserAlreadyExistsError();
+  }
 
-  // create JWT
-  return generateToken({ id: user.id, email: user.email });
-}
-export async function loginUser(email: string, password: string) {
-  const user = await User.findOne({ where: { email } });
-  if (!user) throw new Error("User not found");
+  // Check email
+  const existingUserByEmail = await usersCollection.findOne({ email });
+  if (existingUserByEmail) {
+    throw new EmailAlreadyExistsError();
+  }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new Error("Invalid credentials");
+  // Hash password
+  const hashedPassword = await hashPassword(password);
 
-  // create JWT
-  return generateToken({ id: user.id, email: user.email });
+  const newUser = {
+    username,
+    email,
+    password: hashedPassword,
+  };
+
+  try {
+    await usersCollection.insertOne(newUser);
+  } catch (error) {
+    throw new ErrorInUserCreation();
+  }
+
+  return newUser;
 }
