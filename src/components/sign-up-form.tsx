@@ -17,12 +17,15 @@ import { validateRegister } from "../models/registerSchema"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import RegisterFallback from "./Registering-Fallback"
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [errors, setErrors] = useState<string[]>([]);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState("");
 
   const router = useRouter();
 
@@ -46,6 +49,8 @@ export function SignupForm({
     }
 
     setErrors([]); // Clear previous errors if validation passes
+    setEmail(formData.email);
+    setIsRegistering(true);
 
     // Call backend API
     const res = await fetch("/api/auth/register", {
@@ -149,6 +154,11 @@ export function SignupForm({
           </form>
         </CardContent>
       </Card>
+
+      {isRegistering &&
+        <RegisterFallback email={email} />
+      }
     </div>
+
   )
 }

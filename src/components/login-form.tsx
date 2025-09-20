@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { cn } from "@/src/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import {
@@ -16,13 +16,16 @@ import { FaGithub, FaGoogle } from "react-icons/fa"
 import { signIn } from "next-auth/react"
 import { validateLogin } from "../models/loginSchema"
 import { useRouter } from "next/navigation"
+import LoadingFallback from "./Loading-Fallback"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [errors, setErrors] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false) // 🔹 new state
   const router = useRouter();
+  const [email, setEmail] = useState(''); // 🔹 to hold email for loading popup
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -37,33 +40,39 @@ export function LoginForm({
     const result = validateLogin(formData)
 
     if (!result.success) {
-      // Collect all validation error messages
       const zodErrors = result.error.issues.map((err) => err.message)
       setErrors(zodErrors)
       return
     }
 
-    setErrors([]) // clear previous errors if validation passes
+    setErrors([])
+    setEmail(formData.email) // 🔹 set email for loading popup
+    setIsLoading(true) // 🔹 show popup before API call
 
-    // ✅ Call backend API
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
 
-    if (res.ok) {
-      const data = await res.json()
-      console.log("Login successful:", data)
-      router.push("/signup");
-    } else {
-      const errorData = await res.json()
-      setErrors([errorData.message || "Login failed"])
+      if (res.ok) {
+        const data = await res.json()
+        console.log("Login successful:", data);
+        router.push("/");
+      } else {
+        const errorData = await res.json()
+        setErrors([errorData.message || "Login failed"])
+        setIsLoading(false)
+      }
+    } catch (err) {
+      setErrors(["Something went wrong"])
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6 relative", className)} {...props}>
       <Card className="w-[450px]">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
@@ -72,7 +81,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} >
+          <form onSubmit={handleLogin}>
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
@@ -129,7 +138,6 @@ export function LoginForm({
                   />
                 </div>
 
-                {/* Show error messages */}
                 {errors.length > 0 && (
                   <div className="text-red-500 text-sm space-y-1">
                     {errors.map((err, i) => (
@@ -145,7 +153,10 @@ export function LoginForm({
 
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="/signup" className="underline underline-offset-4 hover:text-indigo-400">
+                <a
+                  href="/signup"
+                  className="underline underline-offset-4 hover:text-indigo-400"
+                >
                   Sign up
                 </a>
               </div>
@@ -153,6 +164,11 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
+
+      {/* 🔹 Loading popup overlay */}
+      {isLoading && (
+       <LoadingFallback email={email} />
+      )}
     </div>
   )
 }
