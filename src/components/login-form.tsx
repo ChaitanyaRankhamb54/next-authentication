@@ -64,7 +64,7 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="w-[450px]">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome back</CardTitle>
           <CardDescription>
@@ -72,7 +72,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin} >
             <div className="grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button
@@ -145,7 +145,7 @@ export function LoginForm({
 
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="/signup" className="underline underline-offset-4">
+                <a href="/signup" className="underline underline-offset-4 hover:text-indigo-400">
                   Sign up
                 </a>
               </div>

@@ -72,7 +72,7 @@ export function SignupForm({
   }
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="w-[450px]">
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Create your account</CardTitle>
           <CardDescription>
@@ -141,7 +141,7 @@ export function SignupForm({
               </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <a href="/login" className="underline underline-offset-4">
+                <a href="/login" className="underline underline-offset-4 hover:text-indigo-400">
                   Login
                 </a>
               </div>
