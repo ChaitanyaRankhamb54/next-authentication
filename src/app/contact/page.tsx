@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Bebas_Neue, Merriweather, Roboto } from "next/font/google";
 import { Github, Mail, MapPin, Phone, User } from "lucide-react";
+import { contactResponseValidation } from "@/src/models/userResponseSchema";
+import UserResponseStatus from "@/src/components/userResponseStatus";
 
 // Import fonts
 const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400" });
@@ -10,33 +12,60 @@ const merri = Merriweather({ subsets: ["latin"], weight: ["300", "700"] });
 const roboto = Roboto({ subsets: ["latin"], weight: ["100", "400", "700"] });
 
 export default function ContactPage() {
+  // create object state for the form data
   const [formData, setFormData] = useState({
-    name: "",
-    mobile: "",
+    fullname: "",
+    number: "",
     email: "",
     message: "",
   });
+
+  // state for status message
   const [status, setStatus] = useState<string>("");
 
+  //store the input filed data in the state
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // update the status of the form submission
     setStatus("Sending...");
+    console.log(formData);
 
+    // send the form data to check the schema and validation
+    const validationResponse = contactResponseValidation.safeParse({
+      fullname: formData.fullname,
+      number: formData.number,
+      email: formData.email,
+      message: formData.message,
+    });
+    
+    if (!validationResponse.success) {
+      const errorMessages = validationResponse.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      setStatus(`Validation failed: ${errorMessages}`);
+      console.log(`Validation failed: ${errorMessages}`);
+
+      return;
+    }
+
+    // send the form data to the backend
     const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
 
+    // update the status based on the response
     if (res.ok) {
       setStatus("Message sent successfully!");
-      setFormData({ name: "", mobile: "", email: "", message: "" });
+      setFormData({ fullname: "", number: "", email: "", message: "" });
     } else {
       setStatus("Something went wrong. Please try again.");
     }
@@ -160,9 +189,9 @@ export default function ContactPage() {
             hover:shadow-xl hover:border-teal-400/60 transition-all duration-300 
             space-y-4"
         >
-          <input 
+          <input
             type="text"
-            name="name"
+            name="fullname"
             placeholder="Your Name"
             className="w-full px-4 py-3 rounded-lg 
               bg-transparent border border-gray-300 dark:border-neutral-600 
@@ -170,13 +199,13 @@ export default function ContactPage() {
               placeholder:text-gray-400 dark:placeholder:text-neutral-500
               focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
               outline-none transition"
-            value={formData.name}
+            value={formData.fullname}
             onChange={handleChange}
             required
           />
           <input
             type="tel"
-            name="mobile"
+            name="number"
             placeholder="Mobile Number"
             className="w-full px-4 py-3 rounded-lg 
               bg-transparent border border-gray-300 dark:border-neutral-600 
@@ -184,7 +213,7 @@ export default function ContactPage() {
               placeholder:text-gray-400 dark:placeholder:text-neutral-500
               focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
               outline-none transition"
-            value={formData.mobile}
+            value={formData.number}
             onChange={handleChange}
             required
           />
@@ -226,9 +255,7 @@ export default function ContactPage() {
             Send Message
           </button>
           {status && (
-            <p className="text-sm mt-2 text-gray-700 dark:text-gray-400">
-              {status}
-            </p>
+            <UserResponseStatus status={status} onClose={() => setStatus("")} />
           )}
         </form>
       </div>

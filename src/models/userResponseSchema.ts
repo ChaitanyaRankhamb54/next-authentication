@@ -1,14 +1,14 @@
-import z from "zod";
-import { Schema, Document, model, models } from "mongoose";
+import z, { int, number } from "zod";
+import mongoose, { Schema, Document } from "mongoose";
 
-interface UserResponseDocument extends Document {
+interface ContactResponseDocument extends Document {
   fullname: string;
   number: string;
   email: string;
   message: string;
 }
 
-export const userResponseValidation = z.object({
+export const contactResponseValidation = z.object({
   fullname: z.string()
     .min(3, "Full name must be at least 3 characters")
     .max(50, "Full name must be less than 50 characters"),
@@ -20,7 +20,7 @@ export const userResponseValidation = z.object({
     .min(50, "Message must be at least 50 characters"),
 });
 
-const userResponseSchema = new Schema<UserResponseDocument>({
+const contactResponseSchema = new Schema<ContactResponseDocument>({
   fullname: {
     type: String,
     required: true,
@@ -41,7 +41,9 @@ const userResponseSchema = new Schema<UserResponseDocument>({
   },
 });
 
-const UserResponse = models.UserResponse 
-  || model<UserResponseDocument>("UserResponse", userResponseSchema);
+const contactResponse =
+  (mongoose.models?.contactResponse as mongoose.Model<ContactResponseDocument>) ||
+  mongoose.model<ContactResponseDocument>("contactResponse", contactResponseSchema);
 
-export default UserResponse;
+export default contactResponse;
+
