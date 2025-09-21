@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bebas_Neue, Merriweather, Roboto } from "next/font/google";
-import { Github, Mail, MapPin, Phone, User } from 'lucide-react';
+import { Github, Mail, MapPin, Phone, User } from "lucide-react";
 
 // Import fonts
 const bebas = Bebas_Neue({ subsets: ["latin"], weight: "400" });
@@ -43,91 +43,133 @@ export default function ContactPage() {
   };
 
   return (
-    <div className={`min-h-screen dark:bg-gradient-to-br dark:from-gray-900 dark:via-black dark:to-gray-800 bg-white text-white flex flex-col items-center py-12 px-4 mt-12 ${roboto.className}`}>
+    <div
+      className={`min-h-screen flex flex-col items-center py-12 px-4 mt-12
+        bg-gradient-to-br from-gray-50 via-white to-gray-100
+        dark:from-gray-900 dark:via-black dark:to-gray-800
+        ${roboto.className}`}
+    >
       {/* Header */}
-      <div className="max-w-3xl w-full text-center mb-8">
-        <h1 className={`text-6xl font-bold mb-6 text-indigo-400 ${bebas.className}`}>Contact Me</h1>
-        <p className={`${merri.className} dark:text-gray-200 text-black/85 text-xl mb-4`}>
-          This project demonstrates secure authentication using Next.js and Auth.js, focusing on building reliable and scalable solutions.
+      <div className="max-w-3xl w-full text-center mb-12">
+        <h1
+          className={`text-6xl font-bold mb-6 
+            bg-gradient-to-r from-indigo-400 via-purple-500 to-pink-500 
+            text-transparent bg-clip-text ${bebas.className}`}
+        >
+          Contact Me
+        </h1>
+        <p
+          className={`${merri.className} text-lg md:text-xl mb-4 
+            text-gray-700 dark:text-gray-300`}
+        >
+          This project demonstrates secure authentication using Next.js and
+          Auth.js, focusing on building reliable and scalable solutions.
         </p>
-        <p className={`mb-4 dark:text-gray-200 text-black/85 ${merri.className} text-xl`}>
-          If you’d like to discuss the project in detail, provide feedback, or explore potential collaboration opportunities, you can get in touch with me by filling out the form below. I’ll respond at the earliest convenience.
+        <p
+          className={`${merri.className} text-lg md:text-xl 
+            text-gray-700 dark:text-gray-300`}
+        >
+          If you’d like to discuss the project in detail, provide feedback, or
+          explore potential collaboration opportunities, you can get in touch
+          with me by filling out the form below. I’ll respond at the earliest
+          convenience.
         </p>
       </div>
 
       {/* Contact Info & Form */}
-      <div className="max-w-4xl w-full grid md:grid-cols-2 gap-8">
+      <div className="max-w-5xl w-full grid md:grid-cols-2 gap-10">
         {/* Contact Info */}
-        <div className="p-6 dark:bg-neutral-800/50 bg:white bg-opacity-70 rounded-xl shadow-2xl space-y-4">
-          {/* Heading */}
-          <h2 className={`${bebas.className} text-2xl dark:text-white text-black mb-4 tracking-wide`}>
+        <div
+          className="p-6 rounded-2xl shadow-lg 
+            backdrop-blur-md bg-white/60 dark:bg-neutral-800/50
+            border border-gray-200 dark:border-white/10
+            hover:shadow-xl hover:border-teal-400/60 transition-all duration-300"
+        >
+          <h2
+            className={`${bebas.className} text-3xl mb-6 
+              text-gray-900 dark:text-white tracking-wide`}
+          >
             About Me
           </h2>
 
-          {/* Contact Details */}
-          <p className={`${roboto.className} flex items-center dark:text-gray-200 text-black/85`}>
-            <User className="mr-3 dark:text-teal-400" size={22} />
-            <span className="font-semibold dark:text-white text-black mr-2">Name:</span>
-            Chaitanya Rankhamb
-          </p>
+          <div className="space-y-4">
+            <p
+              className={`${roboto.className} flex items-center 
+                text-gray-800 dark:text-gray-200`}
+            >
+              <User className="mr-3 text-teal-500" size={22} />
+              <span className="font-semibold mr-2">Name:</span>
+              Chaitanya Rankhamb
+            </p>
 
-          <p className={`${roboto.className} flex items-center dark:text-gray-200 text-black/85`}>
-            <Mail className="mr-3 dark:text-teal-400" size={22} />
-            <span className="font-semibold dark:text-white text-black mr-2">Email:</span>
-            chaitanyarankhamb007@gmail.com
-          </p>
+            <p
+              className={`${roboto.className} flex items-center 
+                text-gray-800 dark:text-gray-200`}
+            >
+              <Mail className="mr-3 text-teal-500" size={22} />
+              <span className="font-semibold mr-2">Email:</span>
+              chaitanyarankhamb007@gmail.com
+            </p>
 
-          <p className={`${roboto.className} flex items-center dark:text-gray-200 text-black/85`}>
-            <Phone className="mr-3 dark:text-teal-400" size={22} />
-            <span className="font-semibold dark:text-white text-black mr-2">Phone:</span>
-            +123 456 7890
-          </p>
+            <p
+              className={`${roboto.className} flex items-center 
+                text-gray-800 dark:text-gray-200`}
+            >
+              <Phone className="mr-3 text-teal-500" size={22} />
+              <span className="font-semibold mr-2">Phone:</span>
+              +123 456 7890
+            </p>
 
-          <p className={`${roboto.className} flex items-center dark:text-gray-200 text-black/85`}>
-            <MapPin className="mr-3 dark:text-teal-400" size={22} />
-            <span className="font-semibold dark:text-white text-black mr-2">Location:</span>
-            VIT College, Pune, India
-          </p>
-
-          {/* GitHub Link */}
-          <div className="mt-6">
-            <p className={`${merri.className} dark:text-gray-300 text-black/85 mb-2 flex items-center gap-2`}>
-              Explore me on
-              <a
-                href="https://github.com/ChaitanyaRankhamb54/next-authentication"
-                target="_blank"
-                className="flex items-center gap-2 text-teal-400 font-medium hover:underline"
-              >
-                GitHub
-                <Github size={22} />
-              </a>
+            <p
+              className={`${roboto.className} flex items-center 
+                text-gray-800 dark:text-gray-200`}
+            >
+              <MapPin className="mr-3 text-teal-500" size={22} />
+              <span className="font-semibold mr-2">Location:</span>
+              VIT College, Pune, India
             </p>
           </div>
 
-          {/* Footer Note */}
-          <div className={`${merri.className} mt-6 dark:text-gray-300 text-black/85`}>
-            Feel free to reach out for any inquiries or collaborations by filling out the form.
+          {/* GitHub Link */}
+          <div className="mt-8">
+            <a
+              href="https://github.com/ChaitanyaRankhamb54/next-authentication"
+              target="_blank"
+              className="flex items-center gap-2 text-teal-500 font-medium hover:underline hover:text-teal-400 transition"
+            >
+              <Github size={22} /> GitHub
+            </a>
           </div>
-        </div>
 
+          {/* Footer Note */}
+          <p
+            className={`${merri.className} mt-8 
+              text-gray-700 dark:text-gray-400`}
+          >
+            Feel free to reach out for any inquiries or collaborations by
+            filling out the form.
+          </p>
+        </div>
 
         {/* Contact Form */}
         <form
           onSubmit={handleSubmit}
-          className="p-6 rounded-lg shadow-2xl space-y-4 
-             dark:bg-neutral-800/50 bg-white
-             dark:text-gray-200 text-black"
+          className="p-6 rounded-2xl shadow-lg 
+            backdrop-blur-md bg-white/60 dark:bg-neutral-800/50
+            border border-gray-200 dark:border-white/10
+            hover:shadow-xl hover:border-teal-400/60 transition-all duration-300 
+            space-y-4"
         >
-          <input
+          <input 
             type="text"
             name="name"
             placeholder="Your Name"
-            className="w-full px-3 py-2 text-[16px] rounded-md 
-               dark:bg-transparent bg-transparent border-black 
-               dark:border dark:border-neutral-600 border-1
-               dark:focus:ring-neutral-500 dark:focus:ring-2 
-               outline-none placeholder:text-[16px] 
-               dark:placeholder:text-neutral-500/80 placeholder:text-black/80"
+            className="w-full px-4 py-3 rounded-lg 
+              bg-transparent border border-gray-300 dark:border-neutral-600 
+              text-gray-900 dark:text-gray-200
+              placeholder:text-gray-400 dark:placeholder:text-neutral-500
+              focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+              outline-none transition"
             value={formData.name}
             onChange={handleChange}
             required
@@ -136,12 +178,12 @@ export default function ContactPage() {
             type="tel"
             name="mobile"
             placeholder="Mobile Number"
-            className="w-full px-3 py-2 text-[16px] rounded-md 
-               dark:bg-transparent bg-transparent border-black 
-               dark:border dark:border-neutral-600 border-1
-               dark:focus:ring-neutral-500 dark:focus:ring-2 
-               outline-none placeholder:text-[16px] 
-               dark:placeholder:text-neutral-500/80 placeholder:text-black/80"
+            className="w-full px-4 py-3 rounded-lg 
+              bg-transparent border border-gray-300 dark:border-neutral-600 
+              text-gray-900 dark:text-gray-200
+              placeholder:text-gray-400 dark:placeholder:text-neutral-500
+              focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+              outline-none transition"
             value={formData.mobile}
             onChange={handleChange}
             required
@@ -150,12 +192,12 @@ export default function ContactPage() {
             type="email"
             name="email"
             placeholder="Email Address"
-            className="w-full px-3 py-2 text-[16px] rounded-md 
-               dark:bg-transparent bg-transparent border-black 
-               dark:border dark:border-neutral-600 border-1
-               dark:focus:ring-neutral-500 dark:focus:ring-2 
-               outline-none placeholder:text-[16px] 
-               dark:placeholder:text-neutral-500/80 placeholder:text-black/80"
+            className="w-full px-4 py-3 rounded-lg 
+              bg-transparent border border-gray-300 dark:border-neutral-600 
+              text-gray-900 dark:text-gray-200
+              placeholder:text-gray-400 dark:placeholder:text-neutral-500
+              focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+              outline-none transition"
             value={formData.email}
             onChange={handleChange}
             required
@@ -164,29 +206,31 @@ export default function ContactPage() {
             name="message"
             placeholder="Your Message"
             rows={4}
-            className="w-full px-3 py-2 text-[16px] rounded-md 
-               dark:bg-transparent bg-transparent border-black 
-               dark:border dark:border-neutral-600 border-1
-               dark:focus:ring-neutral-500 dark:focus:ring-2 
-               outline-none placeholder:text-[16px] 
-               dark:placeholder:text-neutral-500/80 placeholder:text-black/80"
+            className="w-full px-4 py-3 rounded-lg 
+              bg-transparent border border-gray-300 dark:border-neutral-600 
+              text-gray-900 dark:text-gray-200
+              placeholder:text-gray-400 dark:placeholder:text-neutral-500
+              focus:ring-2 focus:ring-teal-500 focus:border-teal-500 
+              outline-none transition resize-none"
             value={formData.message}
             onChange={handleChange}
             required
           ></textarea>
           <button
             type="submit"
-            className="w-full py-3 bg-teal-500 hover:bg-teal-600 
-               text-white font-semibold rounded-lg 
-               transition duration-300"
+            className="w-full py-3 rounded-lg font-semibold text-white
+              bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500
+              hover:from-teal-600 hover:via-cyan-600 hover:to-blue-600
+              shadow-md hover:shadow-xl transition"
           >
             Send Message
           </button>
           {status && (
-            <p className="text-sm mt-2 dark:text-gray-300 text-gray-600">{status}</p>
+            <p className="text-sm mt-2 text-gray-700 dark:text-gray-400">
+              {status}
+            </p>
           )}
         </form>
-
       </div>
     </div>
   );
